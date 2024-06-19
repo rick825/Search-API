@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [query, setQuery] = useState('');
@@ -13,8 +14,13 @@ function App() {
   const fetchItems = async () => {
     try {
       const response = await axios.get('/getItems');
-      setResults(response.data);
-      toast.success("Got All Items");
+      console.log(response.data);
+      if (Array.isArray(response.data)) {
+        setResults(response.data);
+      } else {
+        setResults([]);
+      }
+      toast.success('Got all items');
     } catch (error) {
       toast.error('Error fetching items!');
       console.error(error);
@@ -29,8 +35,14 @@ function App() {
         const response = await axios.get('/search', {
           params: { query },
         });
-        setResults(response.data);
-        toast.success('Search completed successfully!');
+        if (Array.isArray(response.data)) {
+          setResults(response.data);
+          toast.success('Item Found!');
+        } else {
+          setResults([]);
+          toast.error('Item Not Found');
+        }
+        
       }
     } catch (error) {
       toast.error('Error performing search!');
@@ -49,11 +61,16 @@ function App() {
       <button onClick={handleSearch}>Search</button>
       <ul>
         <h3>Here Are the List of Items Available:</h3>
-        {results.map((item) => (
-          <li key={item._id}>{item.name}: {item.description}</li>
-        ))}
+        {results.length > 0 ? (
+          results.map((item) => (
+            <li key={item._id}>{item.name}: {item.description}</li>
+          ))
+        ) : (
+          <li>No items found</li>
+        )}
       </ul>
       <p>**Items can be added using route /api/items</p>
+      <ToastContainer />
     </div>
   );
 }

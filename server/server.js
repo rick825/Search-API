@@ -14,6 +14,10 @@ mongoose.connect(process.env.DB_URI)
 .catch(err => console.log(err));
 
 
+//route
+app.use('/',require('./routes/routes'));
+
+
 //build
 app.use(express.static(path.join(__dirname, '../client/build')));
 
@@ -21,8 +25,7 @@ app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
-//route
-app.use('/',require('./routes/routes'));
+
 
 // Start server
 const PORT = process.env.PORT || 5000;
