@@ -37,12 +37,10 @@ function App() {
         });
         if (Array.isArray(response.data)) {
           setResults(response.data);
-          toast.success('Item Found!');
         } else {
           setResults([]);
-          toast.error('Item Not Found');
         }
-        
+        toast.success('Search completed successfully!');
       }
     } catch (error) {
       toast.error('Error performing search!');
